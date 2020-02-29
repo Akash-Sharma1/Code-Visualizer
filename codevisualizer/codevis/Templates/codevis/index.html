@@ -1,0 +1,24 @@
+<html>
+<body>
+  <div style="  overflow: scroll;">
+    <canvas id="canvas" width="1400" height="600" ></canvas>
+  </div> 
+    <button type="button" id="try" onclick=draw_Rectangle()>Add node</button>
+</body>
+<script>
+  var x=0;
+  var y=0;
+  var l=50;
+  var b=50;
+  function draw_Rectangle() {
+    var canvas = document.getElementById('canvas');
+    if (canvas.getContext) {
+      var ctx = canvas.getContext('2d');
+
+      ctx.fillStyle = 'rgb(204, 204, 204)';
+      ctx.fillRect(x, y, l, b);
+      x+=52;
+    }
+  }
+</script>
+</html>
