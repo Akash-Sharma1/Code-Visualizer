@@ -1,5 +1,5 @@
 from django.shortcuts import render
-# trying if the commit is correct
+
 def index(request):
     if request.method=='POST':
         code = request.POST['code']
@@ -7,7 +7,7 @@ def index(request):
         lang = request.POST['lang']
         arrays = []# name of arrays to be tracked
         
-        #code for commenting cout
+        #code for commenting cout on code recieved
         
         fo = open("codevis/code intercepted/source.cpp","w")
         ln = code.splitlines(True)
