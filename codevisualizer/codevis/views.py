@@ -1,5 +1,5 @@
 from django.shortcuts import render
-
+# trying if the commit is correct
 def index(request):
     if request.method=='POST':
         code = request.POST['code']
