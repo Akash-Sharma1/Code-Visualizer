@@ -55,13 +55,16 @@
     <td width="50%">
       <pre><textarea ALIGN=LEFT id="code" name="code" contenteditable="true"  ></textarea></pre>
     </td>
-    <td>
+    <td VALIGN=TOP>
+      <select id="lang" name="lang">
+        <option value="C++">C++</option>
+        <option value="JS">JS</option>
+        <option value="Python">Python</option>
+      </select><br>
       <input type="submit" Value="show" id="show"><br>
-      <input type="text" name="num" id="num"><br>
+      <input type="text" name="num" id="num" value="0"><br>
       <input type="button" value="Add arrays" onclick=func()>
-      <div id="f1">
-
-      </div>
+      <div id="f1"></div>
     </td>
     </tr>
   </table>

@@ -4,13 +4,14 @@ def index(request):
     if request.method=='POST':
         code = request.POST['code']
         num = int( request.POST['num'] ) # no of arrays to be tracked
-        
+        lang = request.POST['lang']
         arrays = []# name of arrays to be tracked
 
+        
         for i in range(num):
             arr = request.POST[str(i)]
             arrays.append(arr) 
-        
+
          
         
         final=""       
