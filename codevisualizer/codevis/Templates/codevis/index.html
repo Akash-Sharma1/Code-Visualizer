@@ -1,20 +1,84 @@
-<html>
-<body>
-  <div style="  overflow: scroll;">
-    <canvas id="canvas" width="1400" height="600" ></canvas>
-  </div> 
-    <button type="button" id="try" onclick=draw_Rectangle()>Add node</button>
-</body>
-
-<script src="static\datastructures.js"></script>
-
-<script>
-  function draw_Rectangle(){
-    
-    var point = new linkedlist(0,0,50,'canvas');
-    for(i=0;i<10;i++)
-    point.add_block();
-    
+<style>
+  textarea {
+      outline: none;
+    resize: none;
+    width: 1000;
+    height: 600px;     
+    border-radius: 4px;
+    border: 1px solid #cccccc;
+    padding: 5px;
   }
-</script>
-</html>
+  input[type='submit'] {
+      width: 100;
+      background-color: #4CAF50;
+      color: white;
+      padding: 3px 5px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+  }
+  input[type='button'] {
+    width: 100;
+    background-color: #4CAF50;
+    color: white;
+    padding: 3px 5px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  input[type=text], select {
+      width: 100;
+      padding: 8px 20px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+  body {
+      border-radius: 5px;
+      background-color: #D7D2D2;
+      padding: 10px;
+      text-align: center;
+      font-family: Arial;
+      color: rgb(49, 47, 47);
+      margin: 0;
+    }
+</style>
+
+<html><body>
+
+<div>
+
+<form method="POST">
+  {% csrf_token %}
+  <table width="1300" >
+    <tr>
+    <td width="50%">
+      <pre><textarea ALIGN=LEFT id="code" name="code" contenteditable="true"  ></textarea></pre>
+    </td>
+    <td>
+      <input type="submit" Value="show" id="show"><br>
+      <input type="text" name="num" id="num"><br>
+      <input type="button" value="Add arrays" onclick=func()>
+      <div id="f1">
+
+      </div>
+    </td>
+    </tr>
+  </table>
+</form>
+</div>
+<script>
+  function func(){
+    var arrays=0;
+    str="<br>Arrays:";
+    num= document.getElementById("num").value;
+    for(i=0;i<num;i++){
+      str+="<br><input type='text' name="+arrays+">";
+      arrays+=1;
+    }
+    document.getElementById("f1").innerHTML=str;
+    document.getElementById("num").value=arrays;
+  }
+</script> 
+
+</body></html>
