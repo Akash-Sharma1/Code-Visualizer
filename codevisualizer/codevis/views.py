@@ -127,7 +127,7 @@ def format_loops(code):
 
 def index(request):
     if request.method=='POST':
-        code = request.POST['code']
+        Factory_code = request.POST['code']
         num = int( request.POST['num'] ) #no of arrays to be tracked
         lang = request.POST['lang']
         arrays = [] #name of arrays to be tracked
@@ -140,17 +140,21 @@ def index(request):
         if lang=="C++":
             code = correct_formatting(code) #separate semicolons with new lines, puts comments in new line
             code = format_loops(code) #add braces to loops
-            code = change_cpp(code,arrays)
+
+            code = change_cpp(Factory_code,arrays)
             if code=="-1":
                 return HttpResponse("Invalid code")
             
             fo = open("codevis\code_intercepted\source.cpp","w")
             fo.write(code)
             fo.close()
-            
+
             os.system("g++ -o codevis\\code_intercepted\\a codevis\\code_intercepted\\source.cpp")
             os.system("codevis\\code_intercepted\\a.exe")
-            
+        elif lang=="Python":
+            pass
+        else:
+            pass
         fo = open ("output.txt","r")
         lines=fo.readlines()
         
@@ -159,7 +163,7 @@ def index(request):
             line1 = lines[num].split()
             line2 = lines[num+1].split()
             array_name = line1[0].strip()
-            array_size = line1[0].strip()
+            array_size = line1[1].strip()
             array_elem=[]
             for i in line2:
                 array_elem.append(i.strip())
@@ -168,15 +172,10 @@ def index(request):
                 'arr_size': array_size,
                 'arr_elem': array_elem, 
             })
-            
-        return render(request,'codevis/show.html',{'out':final})
+        fo.close()
+        fo = open ("output.txt","w")
+        fo.write("")
+        fo.close()
+        return render(request,'codevis/show.html',{'out':final,'distinct_arrays': len(arrays), 'arrays': arrays,'fac_code':Factory_code ,'dic': dic})
     return render(request, 'codevis/index.html',{})
 
-# #include <bits/stdc++.h>
-# using namespace std;
-# int main(){
-#     int arr[10]={0};
-#     for(int i=0;i<10;i++){
-#         arr[i]=1;
-#     }
-# }

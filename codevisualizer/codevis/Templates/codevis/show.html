@@ -1,48 +1,144 @@
 <style>
   textarea {
-      outline: none;
-    resize: none;
-    width: 1066px;
-    height: 600px;     
+    outline: none;
+  resize: none;
+  width: 400;
+  height: 550px;     
+  border-radius: 4px;
+  border: 1px solid #cccccc;
+  padding: 5px;
+}
+input[type='submit'] {
+    width: 100;
+    background-color: #4CAF50;
+    color: white;
+    padding: 3px 5px;
+    border: none;
     border-radius: 4px;
-    border: 1px solid #cccccc;
-    padding: 5px;
+    cursor: pointer;
+}
+input[type='button'] {
+  width: 100;
+  background-color: #4CAF50;
+  color: white;
+  padding: 3px 5px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+th, td {
+  text-align: left;
+  padding: 8px;
+}
+tr:nth-child(even){background-color: #f2f2f2}
+th {
+  background-color: #4CAF50;
+  color: white;
+}
+input[type=text], select {
+    width: 100;
+    padding: 8px 20px;
+    margin: 8px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
   }
-  input[type='submit'] {
-      width: 10%;
-      background-color: #4CAF50;
-      color: white;
-      padding: 14px 20px;
-      margin: 8px 0;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
+body {
+    border-radius: 5px;
+    background-color: #EBEAEA;
+    padding: 10px;
+    text-align: center;
+    font-family: Arial;
+    color: rgb(49, 47, 47);
+    margin: 0;
   }
-  input[type=text], select {
-      padding: 8px 20px;
-      margin: 8px 0;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-  body {
-      border-radius: 5px;
-      background-color: #f2f2f2;
-      padding: 10px;
-      text-align: center;
-      font-family: Arial;
-      color: rgb(49, 47, 47);
-      margin: 0;
-    }
 </style>
 
 <html><body><center>
- 
-  <div style="  overflow: scroll;">
-    <canvas id="canvas" width="1400" height="600" ></canvas>
-  </div> 
-  
+  <input type="button" onclick=next_step() value="Next Step" id="ns">
+  <table >
+    <tr>
+      <th>Visuals</th><th>Code</th>
+    </tr>
+    <tr>
+      <td align="left" VALIGN="TOP" ><div id="workspace"></div></td>
+      <td><pre><div id="factarea" style="overflow: scroll;height: 500px;">{{fac_code}}</div></pre></td>
+    </tr>
+  </table>
+  <table id="updates" style="display:none;"></table>
+
 </center></body></html>
-  
+
 <script src="static\datastructures.js"></script>
 
-<script src="static\demofile.js"></script>
+
+<script>//making of side pane
+  var line=0;
+  
+</script>
+
+
+<script>// for getting data into tables from backend
+  //style="display:none;"
+  var count=0
+  
+  {% for i in out %}
+    count+=1;
+    var num=count.toString(10);
+    var rows='<tr><td id='+"name_"+num+'><td id='+"size_"+num+'><td id='+"elem_"+num+'><td id='+"canvas_"+num+'>';
+    
+    document.getElementById("updates").innerHTML+=rows;
+    document.getElementById('name_'+num).innerHTML="\"{{ i.arr_name }}\"";
+    document.getElementById('size_'+num).innerHTML={{ i.arr_size }};
+    document.getElementById('canvas_'+num).innerHTML= 'canvas_orig_'+"\"{{ i.arr_name }}\"";
+
+    var list=[]
+    {% for data in i.arr_elem %}
+      list.push({{data}})
+    {% endfor %}
+    document.getElementById('elem_'+num).innerHTML=list;
+  {% endfor %}
+</script>
+
+<script>//making canvases
+  var dist={{ distinct_arrays }};
+  var str="";
+
+  {% for i in arrays %}
+    str+="<div style=\"overflow: scroll;\"><canvas id="+"canvas_orig_"+"\"{{i}}\""+" width=\"750\" height=\"60\" ></canvas></div>";
+  {% endfor %}
+  document.getElementById('workspace').innerHTML=str;
+</script>
+
+<script>//function for showing ith update
+  function show_step(i){
+      var name=document.getElementById("name_"+i).innerHTML;
+      var size=document.getElementById("size_"+i).innerHTML;
+      var elem=document.getElementById("elem_"+i).innerHTML;
+      var canvas=document.getElementById("canvas_"+i).innerHTML;
+  
+      var arr= new array(size,0,0,canvas);
+  
+      var index=0;
+      for (j=0;j<size;j++){
+        nextelem="";
+        while(index<elem.length && elem[index]!=','){nextelem+=elem[index];index+=1}
+        index+=1;
+        arr[j].elem=nextelem;
+        arr[j].show();
+      }
+  }
+  function next_step(){//funation for showing next update
+    line=line+1;
+    if(line<=count){
+      show_step(line);
+      if(line==count){
+        document.getElementById("ns").value="Reached EOF";
+        return;
+      }
+    }
+  }
+</script>

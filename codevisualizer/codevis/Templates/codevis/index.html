@@ -2,8 +2,8 @@
   textarea {
       outline: none;
     resize: none;
-    width: 1000;
-    height: 600px;     
+    width: 1100;
+    height: 550px;     
     border-radius: 4px;
     border: 1px solid #cccccc;
     padding: 5px;
@@ -35,7 +35,7 @@
     }
   body {
       border-radius: 5px;
-      background-color: #D7D2D2;
+      background-color: #EBEAEA;
       padding: 10px;
       text-align: center;
       font-family: Arial;
@@ -50,10 +50,17 @@
 
 <form method="POST">
   {% csrf_token %}
-  <table width="1300" >
+  <table width="1200" >
     <tr>
     <td width="50%">
-      <pre><textarea ALIGN=LEFT id="code" name="code" contenteditable="true"  ></textarea></pre>
+      <pre><textarea ALIGN=LEFT id="code" name="code" contenteditable="true" >
+#include<bits/stdc++.h>
+using namespace std;
+int main(){
+  int arr[10]={0};
+  int brr[10]={0};
+}
+      </textarea></pre>
     </td>
     <td VALIGN=TOP>
       <select id="lang" name="lang">
