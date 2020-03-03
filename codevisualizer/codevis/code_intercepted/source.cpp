@@ -12,4 +12,14 @@ print_visuals(arr);
 cout<<"brr";
 print_visuals(brr);
 
+for(int i=0;i<10;i++){
+arr[i]=3;cout<<"arr";
+print_visuals(arr);
+
+}
+
+brr[0]=2;
+cout<<"brr";
+print_visuals(brr);
+
 }
