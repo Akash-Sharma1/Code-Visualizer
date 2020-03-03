@@ -11,11 +11,15 @@ def change_cpp(code,arrays):
     code=cppupd.gen_define()+code
     code=cppupd.add_freeopen_after_main(code)#changes ordering of dic
     # if function returned "-1" then code doesn't contains a "int main(){"
-    return code
+    final=[]
+    for i in range(len(dic)):
+        if dic[i]!='0':
+            final.append(i+1)
+    return (code,final)
 
 def index(request):
     if request.method=='POST':
-        code = request.POST['code']
+        Factory_code = request.POST['code']
         num = int( request.POST['num'] ) #no of arrays to be tracked
         lang = request.POST['lang']
         arrays = [] #name of arrays to be tracked
@@ -26,11 +30,7 @@ def index(request):
             arrays.append(arr) 
 
         if lang=="C++":
-            #har line m ek semicolon
-            #comments stacks // and /* */
-            #har loop ka content braces m
-            #Handle empty lines
-            code = change_cpp(code,arrays)
+            code,dic = change_cpp(Factory_code,arrays)
             if code=="-1":
                 return HttpResponse("Invalid code")
             
@@ -65,14 +65,5 @@ def index(request):
         fo = open ("output.txt","w")
         fo.write("")
         fo.close()
-        return render(request,'codevis/show.html',{'out':final,'distinct_arrays': len(arrays), 'arrays': arrays})
+        return render(request,'codevis/show.html',{'out':final,'distinct_arrays': len(arrays), 'arrays': arrays,'fac_code':Factory_code ,'dic': dic})
     return render(request, 'codevis/index.html',{})
-
-# #include <bits/stdc++.h>
-# using namespace std;
-# int main(){
-#     int arr[10]={0};
-#     for(int i=0;i<10;i++){
-#         arr[i]=1;
-#     }
-# }
