@@ -4,22 +4,12 @@ int visuals_count;
 using namespace std;
 int main(){
 freopen("output.txt","w",stdout);
-int arr[10]={0};
+  int arr[10]={0};
 cout<<"arr";
 print_visuals(arr);
 
-int brr[20]={1};
+  int brr[10]={0};
 cout<<"brr";
 print_visuals(brr);
 
-for(int i=0;i<10;i++){
-   brr[i]=i+1;
-cout<<"brr";
-print_visuals(brr);
-
-   arr[i]=3;
-cout<<"arr";
-print_visuals(arr);
-
-}
 }

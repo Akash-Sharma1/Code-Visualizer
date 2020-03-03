@@ -120,9 +120,6 @@ def format_loops(code):
         finalCode += temp
         i+=1
     #print(finalCode)
-
-    fo = open("codevis/code intercepted/test.cpp",'w')
-    fo.write(finalCode)
     return finalCode
 
 def index(request):
@@ -138,10 +135,10 @@ def index(request):
             arrays.append(arr) 
 
         if lang=="C++":
-            code = correct_formatting(code) #separate semicolons with new lines, puts comments in new line
+            code = correct_formatting(Factory_code) #separate semicolons with new lines, puts comments in new line
             code = format_loops(code) #add braces to loops
 
-            code = change_cpp(Factory_code,arrays)
+            code = change_cpp(code,arrays)
             if code=="-1":
                 return HttpResponse("Invalid code")
             
@@ -176,6 +173,6 @@ def index(request):
         fo = open ("output.txt","w")
         fo.write("")
         fo.close()
-        return render(request,'codevis/show.html',{'out':final,'distinct_arrays': len(arrays), 'arrays': arrays,'fac_code':Factory_code ,'dic': dic})
+        return render(request,'codevis/show.html',{'out':final,'distinct_arrays': len(arrays), 'arrays': arrays,'fac_code':Factory_code})
     return render(request, 'codevis/index.html',{})
 
