@@ -22,24 +22,24 @@ def index(request):
         for i in range(num):
             arr = request.POST[str(i)]
             arrays.append(arr) 
-            
+
         if lang=="C++":
             code = change_cpp(code,arrays)
             if code=="-1":
                 return HttpResponse("Invalid code")
             
-            fo = open("codevis\code intercepted\source.cpp","w")
+            fo = open("codevis\code_intercepted\source.cpp","w")
             fo.write(code)
             fo.close()
             
-            os.system("g++ codevis\\code intercepted\\source.cpp")
-            os.system("codevis\\code intercepted\\a.exe")
+            os.system("g++ -o codevis\\code_intercepted\\a codevis\\code_intercepted\\source.cpp")
+            os.system("codevis\\code_intercepted\\a.exe")
+            
         return render(request,'codevis/show.html')
     return render(request, 'codevis/index.html',{})
 
 # #include <bits/stdc++.h>
 # using namespace std;
-
 # int main(){
 #     int arr[10]={0};
 #     for(int i=0;i<10;i++){

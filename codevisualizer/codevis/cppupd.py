@@ -99,13 +99,19 @@ def add_freeopen_after_main(code):
     #code doeas not contains a "int main ( ) {", hence error should be returned
 
 def gen_define():
-    final=""
-    final+="#define print_visuals(arr) int visuals_count=0;"
-    final+="for(int visuals_element=0;visuals_element<10;visuals_element++)"
-    final+="{visuals_count++;}cout<<\" \"<<visuals_count<<endl;"
-    final+="for(int visuals_element=0;visuals_element<10;visuals_element++){"
-    final+="cout<<arr[visuals_element]<<\" \";}cout<<endl;"
-    final+="\n"            
+    # final=""
+    # final+="#define print_visuals(arr) int visuals_count=0;"
+    # final+="for(int visuals_element=0;visuals_element<10;visuals_element++)"
+    # final+="{visuals_count++;}cout<<\" \"<<visuals_count<<endl;"
+    # final+="for(int visuals_element=0;visuals_element<10;visuals_element++){"
+    # final+="cout<<arr[visuals_element]<<\" \";}cout<<endl;"
+    # final+="\n"     
+    final="#define print_visuals(arr)"
+    final+="int visuals_count=0;"
+    final+="for(auto visuals_element:arr){visuals_count++;}"
+    final+="cout<<\" \""+"<<visuals_count<<endl;"
+    final+="for(auto visuals_element:arr){cout<<visuals_element<<\" \";}cout<<endl;"
+    final+="\n"       
     return final
   
 def gen_update(arr):
