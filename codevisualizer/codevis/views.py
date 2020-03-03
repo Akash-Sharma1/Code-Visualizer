@@ -21,6 +21,8 @@ def index(request):
         arrays = [] #name of arrays to be tracked
         for i in range(num):
             arr = request.POST[str(i)]
+            if arr == "":
+                continue
             arrays.append(arr) 
 
         if lang=="C++":
@@ -35,7 +37,25 @@ def index(request):
             os.system("g++ -o codevis\\code_intercepted\\a codevis\\code_intercepted\\source.cpp")
             os.system("codevis\\code_intercepted\\a.exe")
             
-        return render(request,'codevis/show.html')
+        fo = open ("output.txt","r")
+        lines=fo.readlines()
+        
+        final=[]
+        for num in range(0,len(lines),2):
+            line1 = lines[num].split()
+            line2 = lines[num+1].split()
+            array_name = line1[0].strip()
+            array_size = line1[0].strip()
+            array_elem=[]
+            for i in line2:
+                array_elem.append(i.strip())
+            final.append({
+                'arr_name': array_name,
+                'arr_size': array_size,
+                'arr_elem': array_elem, 
+            })
+            
+        return render(request,'codevis/show.html',{'out':final})
     return render(request, 'codevis/index.html',{})
 
 # #include <bits/stdc++.h>

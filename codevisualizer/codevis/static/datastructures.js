@@ -39,26 +39,26 @@ function block_n_arrow(x,y,s,cid){
   }
 }
 
-
 function clear_canvas(cid){
   var c = document.getElementById(cid);
   var ctx = c.getContext("2d");
   ctx.clearRect(0, 0, c.height, c.width);
 }
 
-function array(n,j){
+function array(size,y_coord){
   var arr = [];
-  for(i=0;i<n;i++){
-    newp = new block(i*52,52*j,50,'canvas');
-    //newp.show();
+  for(i=0;i<size;i++){
+    newp = new block(i*52,52*y_coord,50,'canvas');
+   // console.log(newp)
+   // newp.show();
     arr.push(newp);
   }
   return arr;
 }
-function linked_list(n,j){
+function linked_list(size,y_coord){
   var ll = [];
-  for(i=0;i<n;i++){
-    newp = new block_n_arrow(i*75,52*j,50,'canvas');
+  for(i=0;i<size;i++){
+    newp = new block_n_arrow(i*75,52*y_coord,50,'canvas');
     //newp.show();
     ll.push(newp);
   }
