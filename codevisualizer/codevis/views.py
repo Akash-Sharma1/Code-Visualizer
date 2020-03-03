@@ -1,8 +1,8 @@
 from django.shortcuts import render,HttpResponse
-import subprocess
+import os
 from . import cppupd
 
-def change_cpp(code):
+def change_cpp(code,arrays):
     code = code.replace('\r','')
     code=cppupd.comment_cout(code)#code for commenting cout on code recieved
     dic = cppupd.checkarrays(code,arrays)#valid index of arrays in code which are upadting will have 1 in the dic
@@ -16,25 +16,24 @@ def change_cpp(code):
 def index(request):
     if request.method=='POST':
         code = request.POST['code']
-        num = int( request.POST['num'] ) # no of arrays to be tracked
+        num = int( request.POST['num'] ) #no of arrays to be tracked
         lang = request.POST['lang']
-        arrays = []# name of arrays to be tracked
+        arrays = [] #name of arrays to be tracked
         for i in range(num):
             arr = request.POST[str(i)]
             arrays.append(arr) 
             
         if lang=="C++":
-            code = change_cpp(code)
+            code = change_cpp(code,arrays)
             if code=="-1":
                 return HttpResponse("Invalid code")
             
-            fo = open("codevis/code intercepted/source.cpp","w")
+            fo = open("codevis\code intercepted\source.cpp","w")
             fo.write(code)
-            try:
-                subprocess.call(["g++","codevis/code intercepted/source.cpp"])
-            except:
-                return HttpResponse("Invalid Code")
+            fo.close()
             
+            os.system("g++ codevis\\code intercepted\\source.cpp")
+            os.system("codevis\\code intercepted\\a.exe")
         return render(request,'codevis/show.html')
     return render(request, 'codevis/index.html',{})
 

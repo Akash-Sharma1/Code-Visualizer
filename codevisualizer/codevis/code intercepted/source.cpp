@@ -1,4 +1,4 @@
-#define print_visuals(arr)int visuals_count=0;for(auto visuals_element:arr){visuals_count++;}cout<<" "<<visuals_count<<endl;for(auto visuals_element:arr){cout<<visuals_element<<" ";}cout<<endl;
+#define print_visuals(arr) int visuals_count=0;for(int visuals_element=0;visuals_element<10;visuals_element++){visuals_count++;}cout<<" "<<visuals_count<<endl;for(int visuals_element=0;visuals_element<10;visuals_element++){cout<<arr[visuals_element]<<" ";}cout<<endl;
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -13,5 +13,5 @@ print_visuals(array);
 cout<<"array";
 print_visuals(array);
 
-    }
+}   
 }
