@@ -32,9 +32,9 @@ def lines_with_semocolon(code):
             temp=""
     if temp != "":
         list.append(temp)
-        
+
     dic = [0]*len(list)
-    
+
     idx = 0
     braces = 0
     for i in list:
@@ -47,7 +47,7 @@ def lines_with_semocolon(code):
             elif j=='}':
                 braces-=1
         temp=i[0:len(i)-1].strip()
-        if temp[len(temp)-1] == ';' and braces>0:
+        if len(temp)>0 and temp[len(temp)-1] == ';' and braces>0:
             dic[idx]=1
         idx+=1
     return (dic,list)
@@ -73,7 +73,7 @@ def index_just_after_main(code):
                 j+=1#extra space
             if code[j]!='(':
                 continue
-            
+
             j+=1
             while j<len(code) and (alpha(code[j]) or code[j]==','):
                 j+=1#args
@@ -105,10 +105,10 @@ def gen_define():
     final+="for(auto visuals_element:arr){cout<<visuals_element<<\" \";}cout<<endl;"
     final+="\n"       
     return final
-  
+
 def gen_update(arr):
     return " cout<<\""+arr+"\";print_visuals("+arr+");"
-  
+
 def insert_update_statements(code_lines,dic,arrays):
     Vsyntax=""
     for i in arrays:
@@ -134,4 +134,3 @@ def makeline_seq(code_lines,dic):
             final+="  cout<<"+str(L)+"<<endl;"
         final+="\n"
     return final
-
