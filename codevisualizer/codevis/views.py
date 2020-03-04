@@ -34,7 +34,7 @@ def index(request):
         if lang=="C++":
             code = cppformat.correct_formatting(code) #separate semicolons with new lines, puts comments in new line
             code = cppformat.format_loops(code) #add braces to loops
-            #print(code)
+            # print(code)
             (code1,code2,flag_lines) = change_cpp(code,arrays)
             
             if code1=="-1" or code2=="-1":
@@ -54,6 +54,12 @@ def index(request):
                 'code': code,# side pane code
                 'line_seq': line_seq,
             }    
+            # fo = open ("output2.txt","w")
+            # fo.write("")
+            # fo.close
+            # fo = open ("output1.txt","w")
+            # fo.write("")
+            # fo.close
         return render(request,'codevis/show.html',final)
     return render(request, 'codevis/index.html',{})
 

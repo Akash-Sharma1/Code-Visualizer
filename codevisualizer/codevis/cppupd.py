@@ -58,8 +58,9 @@ def checkupdates(code,dic):
         if dic[i] != "0":
             flag="0"
             j=i
-            while(j < len(code) and j!='\n' and j!=';'):
-                if code[j]=='=' or code[j]=='.':
+            while j < len(code) and code[j]!='\n':
+                if code[j]=='=' or code[j]=='.' or code[j]==';':
+                    print("ok")
                     flag=dic[i]
                 j+=1
                 #potential == failure case
@@ -70,7 +71,7 @@ def add_freeopen_after_main(code,filename):
     j=index_just_after_main(code)
     if j==-1:
         return "-1"
-    return code[0:j]+"freopen(\""+filename+"\",\"w\",stdout);\n"+code[j+1:len(code)]
+    return code[0:j]+"freopen(\""+filename+"\",\"w\",stdout);"+code[j+1:len(code)]
 
 def index_just_after_main(code):
     for i in range(len(code)):
@@ -94,7 +95,7 @@ def index_just_after_main(code):
             if code[j]!=')':
                 continue
             j+=1
-            while j<len(code) and (code[j]==' ' or code[j]==';'):
+            while j<len(code) and (code[j]==' ' or code[j]=='\n'):
                 j+=1#extra space
             if(code[j]!='{'):
                 continue
@@ -104,11 +105,11 @@ def index_just_after_main(code):
     #code doeas not contains a "int main ( ) {", hence error should be returned
 
 def gen_define():
-    # final=""
-    # final+="#define print_visuals(arr) int visuals_count=0;"
-    # final+="for(int visuals_element=0;visuals_element<10;visuals_element++)"
+    # final="int visuals_count;\n"
+    # final+="#define print_visuals(arr) visuals_count=0;"
+    # final+="for(int visuals_element=0;visuals_element<sizeof(arr)/sizeof(arr[0]);visuals_element++)"
     # final+="{visuals_count++;}cout<<\" \"<<visuals_count<<endl;"
-    # final+="for(int visuals_element=0;visuals_element<10;visuals_element++){"
+    # final+="for(int visuals_element=0;visuals_element<sizeof(arr)/sizeof(arr[0]);visuals_element++){"
     # final+="cout<<arr[visuals_element]<<\" \";}cout<<endl;"
     # final+="\n"
     final="int visuals_count;\n"     
@@ -147,31 +148,26 @@ def makeline_seq(code,dic):
     lines = []
     for i in range(len(code)):
         if code[i]=='\n':
-           lines.append(flag)
+           lines.append(flag)#flag_lines
            flag=0
         else:
             if dic[i]!='0':
                 flag=1
-    pre=""
-    j=index_just_after_main(code)
-    if j==-1:
-        return "-1"
     
-    final=code[0:j]
+    final=""
     L=0
-    for i in final:
-        if i == '\n':
-            L+=1
-    
-    code=code[j:len(code)]
-    
+    braces = 0
     for i in range(len(code)):
+        if code[i] == '{':
+            braces+=1
+        elif code[i] == '}':
+            braces-=1
         if code[i] == '\n':
             L+=1
             j=i-1
             while j>=0 and j==' ':
                 j-=1
-            if j>=0 and code[j]==';':
+            if j>=0 and code[j]==';' and braces>0:
                 final+="  cout<<"+str(L)+"<<endl;"
         final+=code[i]
     return (final, lines)

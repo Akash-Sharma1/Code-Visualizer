@@ -48,6 +48,11 @@ def format_loops(code):
     cnt = 0
     while i < len(ln):
         temp = ln[i]
+        temp2 = temp.strip()
+        if temp2[0] == '/' and len(temp2) > 1 and temp2[1] == '/':
+            finalCode+=temp
+            i+=1
+            continue
         if "for" in temp:
             ini = temp.find("for")
             j = ini + 3

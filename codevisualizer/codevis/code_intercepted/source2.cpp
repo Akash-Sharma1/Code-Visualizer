@@ -1,20 +1,41 @@
-#include <bits/stdc++.h>
+// C++ program for implementation of Bubble sort 
+#include <bits/stdc++.h> 
 using namespace std;
-int main() {freopen("output2.txt","w",stdout);
-int arr[10]={0};  cout<<4<<endl;
-int brr[10]={0};  cout<<5<<endl;
-int a=0;  cout<<6<<endl;
-int b=0;  cout<<7<<endl;
-int c=0;  cout<<8<<endl;
-for(int i=0;i<10;i++){
-//cout<<arr[i]<<" ";  cout<<10<<endl;
-arr[i]=i*72+1;  cout<<11<<endl;
-arr[i]+=1;  cout<<12<<endl;
+void swap(int *xp, int *yp) 
+{ 
+	int temp = *xp;  cout<<6<<endl;
+	*xp = *yp;  cout<<7<<endl;
+	*yp = temp;  cout<<8<<endl;
+} 
+/* Function to print an array */
+void printArray(int arr[], int size) 
+{ 
+	int i;  cout<<13<<endl;
+	for(i = 0; i < size; i++)
+{
+		//cout << arr[i] << " ";  cout<<16<<endl;
 }
-a=7;  cout<<14<<endl;
-b=8;  cout<<15<<endl;
-for(int i=0;i<10;i++){
-//cout<<arr[i]<<" ";  cout<<17<<endl;
-brr[i]=arr[i]*72+1;  cout<<18<<endl;
+
+	//cout << endl;  cout<<19<<endl;
+} 
+// Driver code 
+int main() 
+{freopen("output2.txt","w",stdout);
+	int arr[] = {64, 34, 25, 12, 22, 11, 90};  cout<<24<<endl;
+	int n = sizeof(arr)/sizeof(arr[0]);  cout<<25<<endl;
+	int i, j;  cout<<26<<endl;
+	for(i = 0; i < n-1; i++)
+{
+	// Last i elements are already in place 
+	for(j = 0; j < n-i-1; j++)
+{
+		if (arr[j] > arr[j+1]) 
+			swap(&arr[j], &arr[j+1]);  cout<<33<<endl;
 }
 }
+
+	//cout<<"Sorted array: \n";  cout<<37<<endl;
+	printArray(arr, n);  cout<<38<<endl;
+	return 0;  cout<<39<<endl;
+} 
+// This code is contributed by rathbhupendra 
