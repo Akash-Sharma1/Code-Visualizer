@@ -98,23 +98,3 @@ def gen_source_cpp(code,filename):
     fo.close()
     os.system("g++ -o codevis\\code_intercepted\\a codevis\\code_intercepted\\"+filename)
     os.system("codevis\\code_intercepted\\a.exe")
-
-# #include <bits/stdc++.h>
-# using namespace std;
-# int main() {
-# int arr[10]={0};
-# int brr[10]={0};
-# int a=0;
-# int b=0;
-# int c=0;
-# for(int i=0;i<10;i++){
-# cout<<arr[i]<<" ";
-# arr[i]=i*72+1;
-# }
-# a=7;
-# b=8;
-# for(int i=0;i<10;i++){
-# cout<<arr[i]<<" ";
-# brr[i]=arr[i]*72+1;
-# }
-# }
