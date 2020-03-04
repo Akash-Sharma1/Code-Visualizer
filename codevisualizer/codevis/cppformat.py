@@ -64,13 +64,15 @@ def format_loops(code):
                                 bracePresent = False
                             break
                     if bracePresent == False:
-                        temp = temp[:j+1] + "{\n"
+                        temp = temp[:j+1] + "\n{\n"
                         cnt+=1
                 else:
                     if temp2[0] != '{':
                         ln.insert(i+1,temp[j+1:])
-                        temp = temp[:j+1] + "{\n"
+                        temp = temp[:j+1] + "\n{\n"
                         cnt+=1
+                    else:
+                        temp+='\n'
 
         elif "while" in temp:
             ini = temp.find("while")
@@ -89,18 +91,20 @@ def format_loops(code):
                                 bracePresent = False
                             break
                     if bracePresent == False:
-                        temp = temp[:j+1] + "{\n"
+                        temp = temp[:j+1] + "\n{\n"
                         cnt+=1
                 else:
                     if temp2[0] != '{':
                         ln.insert(i+1,temp[j+1:])
-                        temp = temp[:j+1] + "{\n"
+                        temp = temp[:j+1] + "\n{\n"
                         cnt+=1
+                    else:
+                        temp+='\n'
 
         elif cnt != 0:
             j = temp.find(';')
             if j != -1:
-                temp = temp[:j+1] + '}'*cnt +'\n'+ temp[j+1:]
+                temp = temp[:j+1] + '\n}'*cnt +'\n'+ temp[j+1:]
                 cnt = 0
         finalCode += temp
         i+=1

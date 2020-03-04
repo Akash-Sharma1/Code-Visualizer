@@ -66,8 +66,13 @@ def checkupdates(code,dic):
             dic[i]=flag
     return dic
 
+def add_freeopen_after_main(code,filename):
+    j=index_just_after_main(code)
+    if j==-1:
+        return "-1"
+    return code[0:j]+"freopen(\""+filename+"\",\"w\",stdout);\n"+code[j+1:len(code)]
 
-def add_freeopen_after_main(code):
+def index_just_after_main(code):
     for i in range(len(code)):
         final="int main"
         x=i
@@ -94,8 +99,8 @@ def add_freeopen_after_main(code):
             if(code[j]!='{'):
                 continue
             j+=1
-            return code[0:j]+"\nfreopen(\"output.txt\",\"w\",stdout);\n"+code[j+1:len(code)]
-    return "-1"
+            return j
+    return -1
     #code doeas not contains a "int main ( ) {", hence error should be returned
 
 def gen_define():
@@ -116,7 +121,7 @@ def gen_define():
     return final
   
 def gen_update(arr):
-    return "cout<<\""+arr+"\";\nprint_visuals("+arr+");\n\n"
+    return "  cout<<\""+arr+"\";print_visuals("+arr+");\n"
   
 def insert_update_statements(code,dic):
     final=""
@@ -130,13 +135,44 @@ def insert_update_statements(code,dic):
             if j < len(code) and code[j]==';':
                 final+=code[j]
                 j+=1
-            if j<len(code) and code[j]=='\n':
-                final+=code[j]
-                j+=1
             final+=gen_update(dic[i])
             i=j
         else:
             final+=code[i]
             i+=1
     return final        
+
+def makeline_seq(code,dic):
+    flag=0
+    lines = []
+    for i in range(len(code)):
+        if code[i]=='\n':
+           lines.append(flag)
+           flag=0
+        else:
+            if dic[i]!='0':
+                flag=1
+    pre=""
+    j=index_just_after_main(code)
+    if j==-1:
+        return "-1"
+    
+    final=code[0:j]
+    L=0
+    for i in final:
+        if i == '\n':
+            L+=1
+    
+    code=code[j:len(code)]
+    
+    for i in range(len(code)):
+        if code[i] == '\n':
+            L+=1
+            j=i-1
+            while j>=0 and j==' ':
+                j-=1
+            if j>=0 and code[j]==';':
+                final+="  cout<<"+str(L)+"<<endl;"
+        final+=code[i]
+    return (final, lines)
 

@@ -34,10 +34,10 @@ th, td {
   text-align: left;
   padding: 8px;
 }
-tr:nth-child(even){background-color: #f2f2f2}
+tr:nth-child(even){background-color: #E9F2C4}
 th {
   background-color: #4CAF50;
-  color: white;
+  color: #E9F2C4;
 }
 input[type=text], select {
     width: 100;
@@ -48,7 +48,7 @@ input[type=text], select {
   }
 body {
     border-radius: 5px;
-    background-color: #EBEAEA;
+    background-color: #E9F2C4;
     padding: 10px;
     text-align: center;
     font-family: Arial;
@@ -59,25 +59,50 @@ body {
 
 <html><body><center>
   <input type="button" onclick=next_step() value="Next Step" id="ns">
-  <table >
+  <table bgcolor="#E9F2C4">
+    
+  <col width="400">
+  <col width="600">
     <tr>
       <th>Visuals</th><th>Code</th>
     </tr>
     <tr>
       <td align="left" VALIGN="TOP" ><div id="workspace"></div></td>
-      <td><pre><div id="factarea" style="overflow: scroll;height: 500px;">{{fac_code}}</div></pre></td>
-    </tr>
+      <td><pre><div id="factarea" style="overflow: scroll;height: 500px;">{{code}}</div></pre></td>
+    </tr> 
   </table>
   <table id="updates" style="display:none;"></table>
+  <textarea id="ta"  style="display:none;"></textarea>
 
 </center></body></html>
 
 <script src="static\datastructures.js"></script>
 
 
-<script>//making of side pane
+
+
+
+
+
+<script>//initializing code , starting indexes , flow
   var line=0;
-  
+  var curr_line=0;//1 based idx
+  var starting_index = [0];//0 based indx
+  var code= document.getElementById('factarea').innerHTML;
+  var Unaltered_code=code;
+
+  for (i=0;i<code.length;i++){
+    if (code[i]=='\n'){
+      starting_index.push(i+1);//strating index of every line in the code
+    }
+  }
+  var lineincode = []
+  var total_lines = 0
+  {% for i in line_seq %}
+    total_lines+=1;
+    lineincode.push({{i}})// what is sequence of flow for the code
+  {% endfor %}
+
 </script>
 
 
@@ -103,18 +128,24 @@ body {
   {% endfor %}
 </script>
 
+
+
+
 <script>//making canvases
-  var dist={{ distinct_arrays }};
+  var dist={{ len_arr }};
   var str="";
 
   {% for i in arrays %}
     str+="<div style=\"overflow: scroll;\"><canvas id="+"canvas_orig_"+"\"{{i}}\""+" width=\"750\" height=\"60\" ></canvas></div>";
   {% endfor %}
   document.getElementById('workspace').innerHTML=str;
+
 </script>
 
 <script>//function for showing ith update
+
   function show_step(i){
+    console.log(i);
       var name=document.getElementById("name_"+i).innerHTML;
       var size=document.getElementById("size_"+i).innerHTML;
       var elem=document.getElementById("elem_"+i).innerHTML;
@@ -131,14 +162,54 @@ body {
         arr[j].show();
       }
   }
-  function next_step(){//funation for showing next update
-    line=line+1;
-    if(line<=count){
-      show_step(line);
-      if(line==count){
-        document.getElementById("ns").value="Reached EOF";
-        return;
+</script>
+
+<script>// for highlighting and dehighlighting  
+  function highlight(i){
+    dehighlight();
+
+    index=starting_index[i];
+    next_idx=code.length
+    
+    if(i+1<starting_index.length){ 
+      next_idx=starting_index[i+1];}
+
+    if(index==0)return;
+    code=code.substring(0,index)+"<span style=\"background-color:#F8EF5F\">"+code.substring(index,next_idx-1)+"</span>"+code.substring(next_idx-1,code.length);
+    
+    document.getElementById('factarea').innerHTML=code;
+  }
+  
+  function dehighlight(){
+    code=Unaltered_code;
+    document.getElementById('factarea').innerHTML=code;
+  }
+  var flag_lines = []
+  var valid_lines = 1
+
+  {% for i in flag_lines %}
+    flag_lines.push({{i}})// what is sequence of flow for the code
+  {% endfor %}
+</script>
+
+
+
+<script>// getting next step
+
+  function next_step(){
+    if(line<total_lines){
+      line+=1;
+      curr_line=lineincode[line-1];//0 based index
+      highlight( curr_line-1 );
+
+      if(valid_lines<=count && flag_lines[curr_line-1] != '0' && Unaltered_code[starting_index[curr_line-1]]!='/'){
+        show_step(valid_lines);
+        valid_lines+=1;
       }
+    }
+    else{
+      document.getElementById("ns").value="Reached EOF";
+      dehighlight();
     }
   }
 </script>
