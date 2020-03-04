@@ -10,7 +10,8 @@
     <tr>
       <td align="left" VALIGN="TOP" width="70%" ><div id="workspace"></div></td>
       <td><pre><div id="factarea" style="overflow: scroll;height: 450px;background-color:#232B35;color: #5C9DEE;">{{code}}</div></pre><br>
-        <input type="button" onclick=next_step() value="Next Step" id="ns"></td>
+        <input type="button" onclick=next_step() value="Next Step" id="ns">
+        <input type="button" onclick=toggle() value="Toggle_ops"></td>
     </tr> 
   </table>
   <table id="updates" style="display:none;"></table>
@@ -20,6 +21,22 @@
 
 <script src="static\datastructures.js"></script>
 
+
+<script>
+  var tog=0
+  function toggle(){
+    if(tog == 1){
+      console.log(0);
+      tog = 0;
+      document.getElementById("updates").style="display:none;";
+    }
+    else{
+      console.log(1);
+      tog = 1;
+      document.getElementById("updates").style = "";
+    }
+  }
+</script>
 
 
 <script>//initializing code , starting indexes , flow
@@ -62,11 +79,10 @@
     {% for data in i.arr_elem %}
       list.push({{data}})
     {% endfor %}
+    
     document.getElementById('elem_'+num).innerHTML=list;
   {% endfor %}
 </script>
-
-
 
 
 <script>//making canvases
@@ -83,14 +99,20 @@
 <script>//function for showing ith update
 
   function show_step(i){
-    console.log(i);
+    var minus="\""+-1+"\"";
+    while(i<=count*dist){
       var name=document.getElementById("name_"+i).innerHTML;
+      if( name == minus){
+        console.log('here '+name);
+        return i+1;
+      }
+      console.log(name);
       var size=document.getElementById("size_"+i).innerHTML;
       var elem=document.getElementById("elem_"+i).innerHTML;
       var canvas=document.getElementById("canvas_"+i).innerHTML;
-  
+
       var arr= new array(size,0,0,canvas);
-  
+
       var index=0;
       for (j=0;j<size;j++){
         nextelem="";
@@ -99,6 +121,9 @@
         arr[j].elem=nextelem;
         arr[j].show();
       }
+      i+=1;
+    }
+    return i+1;
   }
 </script>
 
@@ -139,10 +164,9 @@
       line+=1;
       curr_line=lineincode[line-1];//0 based index
       highlight( curr_line-1 );
-
-      if(valid_lines<=count && flag_lines[curr_line-1] != '0' && Unaltered_code[starting_index[curr_line-1]]!='/'){
-        show_step(valid_lines);
-        valid_lines+=1;
+      
+      if(valid_lines<=count*dist && flag_lines[curr_line-1] != '0'){
+        valid_lines=show_step(valid_lines);
       }
     }
     else{

@@ -5,19 +5,18 @@ from . import cppupd,cppformat
 def change_cpp(code,arrays):
     code = code.replace('\r','')
     code=cppupd.comment_cout(code)#code for commenting cout on code recieved
-    dic = cppupd.checkarrays(code,arrays)#valid index of arrays in code which are upadting will have 1 in the dic
-    dic = cppupd.checkupdates(code,dic)
+    (flag_lines,code_lines) = cppupd.lines_with_semocolon(code)
     
-    (code2,flag_line) = cppupd.makeline_seq(code,dic)
+    #print(code_lines)
+    code2 = cppupd.makeline_seq(code_lines,flag_lines)#puts line no after the lines
+    #print(code2)
     code2=cppupd.add_freeopen_after_main(code2,"output2.txt")#changes ordering of dic
     
-    code1=cppupd.insert_update_statements(code,dic)#changes ordering of dic
+    code1=cppupd.insert_update_statements(code_lines,flag_lines,arrays)#puts the visual syntax at end of lines
     code1=cppupd.gen_define()+code1
     code1=cppupd.add_freeopen_after_main(code1,"output1.txt")#changes ordering of dic
     # if function returned "-1" then code doesn't contains a "int main(){"
-    return (code1,code2,flag_line)
-
-
+    return (code1,code2,flag_lines)
 
 def index(request):
     if request.method=='POST':
@@ -37,15 +36,15 @@ def index(request):
             # print(code)
             (code1,code2,flag_lines) = change_cpp(code,arrays)
             
-            if code1=="-1" or code2=="-1":
-                return HttpResponse("Invalid code")
-            
+            # return HttpResponse("ok")
             gen_source_cpp(code1,"source1.cpp")
             Updated=read_output1()
             gen_source_cpp(code2,"source2.cpp")
             line_seq=read_output2()
-            
-            
+        
+            if ( len(Updated)==0 and len(line_seq) == 0 ) or ( code1=="-1" ):
+                return HttpResponse("Compilation error / Nothing to Show")
+        
             final={
                 'out': Updated,# printed arrays
                 'flag_lines': flag_lines,#array of 0/1
@@ -70,17 +69,25 @@ def read_output1():
     Updates=[]
     for num in range(0,len(lines),2):
         line1 = lines[num].split()
-        line2 = lines[num+1].split()
-        array_name = line1[0].strip()
-        array_size = line1[1].strip()
-        array_elem=[]
-        for i in line2:
-            array_elem.append(i.strip())
-        Updates.append({
-            'arr_name': array_name,
-            'arr_size': array_size,
-            'arr_elem': array_elem, 
-        })
+        if line1[0] != '-1':
+            array_name = line1[0].strip()
+            array_size = line1[1].strip()
+            array_elem = []
+            if int(array_size) > 0 and num+1<len(lines):
+                line2 = lines[num+1].split()
+                for i in line2:
+                    array_elem.append(i.strip())
+            Updates.append({
+                'arr_name': array_name,
+                'arr_size': array_size,
+                'arr_elem': array_elem, 
+            })
+        else:
+            Updates.append({
+                'arr_name': '-1',
+                'arr_size': '-1',
+                'arr_elem': ['-1'], 
+            })
     return Updates
     
 def read_output2():

@@ -17,61 +17,46 @@ def comment_cout(code):
         i+=1
     return final
 
-def sub_inarray(code,arrays,i,symbols):
-    final=""
-    if code[i] in symbols:
-        return "-1"
-    while(i < len(code)):
-        if alpha(code[i]):
-            final+=code[i]
-        else:
-            break
-        i+=1
-    if final in arrays:
-        return final
-    return "-1"
-
-
-def is_valid_variable(a,b,symbols):
-    if a in symbols and b in symbols:
-        return True
-    return False
-
 def alpha(i):
     if (ord(i)>=97 and ord(i)<97+26) or (ord(i)>=65 and ord(i)<65+26) or (ord(i)>=48 and ord(i)<48+10):
         return True
     return False
 
-def checkarrays(code,arrays):
-    dic = ["0"]*len(code)
-    symbols = [' ', '\n', ';', '<', '>', ',', '.', '(' ,')', '{' ,'}', '[' , ']', '+', '*', '-', '/', '^', '=', '&', '%' ,'!', '|' ,]
-    for i in range(len(code)):
-        x = sub_inarray(code,arrays,i,symbols)
-        if x!="-1":
-            if is_valid_variable(code[i-1],code[i+len(x)],symbols):
-                dic[i]=x
-                #potential out of bound
-    return dic
-
-def checkupdates(code,dic):
-    for i in range(len(code)):
-        if dic[i] != "0":
-            flag="0"
-            j=i
-            while j < len(code) and code[j]!='\n':
-                if code[j]=='=' or code[j]=='.' or code[j]==';':
-                    print("ok")
-                    flag=dic[i]
-                j+=1
-                #potential == failure case
-            dic[i]=flag
-    return dic
+def lines_with_semocolon(code):
+    list = []
+    temp=""
+    for i in code:
+        temp+=i
+        if i=='\n':
+            list.append(temp)
+            temp=""
+    if temp != "":
+        list.append(temp)
+        
+    dic = [0]*len(list)
+    
+    idx = 0
+    braces = 0
+    for i in list:
+        if i[0]=='/' and i[1]=='/':
+            idx+=1
+            continue
+        for j in i:
+            if j=='{':
+                braces+=1
+            elif j=='}':
+                braces-=1
+        temp=i[0:len(i)-1].strip()
+        if temp[len(temp)-1] == ';' and braces>0:
+            dic[idx]=1
+        idx+=1
+    return (dic,list)
 
 def add_freeopen_after_main(code,filename):
     j=index_just_after_main(code)
     if j==-1:
         return "-1"
-    return code[0:j]+"freopen(\""+filename+"\",\"w\",stdout);"+code[j+1:len(code)]
+    return code[0:j]+"freopen(\""+filename+"\",\"w\",stdout);"+code[j:len(code)]
 
 def index_just_after_main(code):
     for i in range(len(code)):
@@ -112,7 +97,7 @@ def gen_define():
     # final+="for(int visuals_element=0;visuals_element<sizeof(arr)/sizeof(arr[0]);visuals_element++){"
     # final+="cout<<arr[visuals_element]<<\" \";}cout<<endl;"
     # final+="\n"
-    final="int visuals_count;\n"     
+    final="int visuals_count;\n"  
     final+="#define print_visuals(arr)"
     final+="visuals_count=0;"
     final+="for(auto visuals_element:arr){visuals_count++;}"
@@ -122,53 +107,31 @@ def gen_define():
     return final
   
 def gen_update(arr):
-    return "  cout<<\""+arr+"\";print_visuals("+arr+");\n"
+    return " cout<<\""+arr+"\";print_visuals("+arr+");"
   
-def insert_update_statements(code,dic):
-    final=""
-    i=0
-    while i < len(code):
-        if dic[i]!="0":
-            j=i
-            while j<len(code) and code[j]!=';' and code[j]!='\n':
-                final+=code[j]
-                j+=1
-            if j < len(code) and code[j]==';':
-                final+=code[j]
-                j+=1
-            final+=gen_update(dic[i])
-            i=j
-        else:
-            final+=code[i]
-            i+=1
-    return final        
-
-def makeline_seq(code,dic):
-    flag=0
-    lines = []
-    for i in range(len(code)):
-        if code[i]=='\n':
-           lines.append(flag)#flag_lines
-           flag=0
-        else:
-            if dic[i]!='0':
-                flag=1
-    
+def insert_update_statements(code_lines,dic,arrays):
+    Vsyntax=""
+    for i in arrays:
+        Vsyntax+=gen_update(i)
+    Vsyntax+="cout<<-1<<endl<<-1<<endl;"
     final=""
     L=0
-    braces = 0
-    for i in range(len(code)):
-        if code[i] == '{':
-            braces+=1
-        elif code[i] == '}':
-            braces-=1
-        if code[i] == '\n':
-            L+=1
-            j=i-1
-            while j>=0 and j==' ':
-                j-=1
-            if j>=0 and code[j]==';' and braces>0:
-                final+="  cout<<"+str(L)+"<<endl;"
-        final+=code[i]
-    return (final, lines)
+    for i in code_lines:
+        L+=1
+        final+=i[0:len(i)-1]
+        if dic[L-1] == 1:
+            final+=Vsyntax
+        final+="\n"
+    return final
+
+def makeline_seq(code_lines,dic):
+    final=""
+    L=0
+    for i in code_lines:
+        L+=1
+        final+=i[0:len(i)-1]
+        if dic[L-1] == 1:
+            final+="  cout<<"+str(L)+"<<endl;"
+        final+="\n"
+    return final
 
