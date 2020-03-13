@@ -217,9 +217,19 @@ debugpwd = "test.py"
 function_name = "main"
 function_args = []
 
-tdebugger = debugC(debugpwd, function_name, function_args, [])
+rundebug = debugC(debugpwd, function_name, function_args, [])
 
-results = tdebugger.run()
+results = rundebug.run()
 
 terminal = Terminal(results)
 terminal.terminal()
+
+# # represents line number
+# L represents list
+# D represents dictionary
+# V represents variable
+# = represents initalization
+# + represents appending
+# - represents removing
+# : represents key value pair
+# => represents  prev value to new value
