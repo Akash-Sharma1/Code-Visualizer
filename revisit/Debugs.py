@@ -159,51 +159,57 @@ class Terminal:
         logs = self.results["logs"]
         for step in logs:
             print(
-                "line {}".format( step["line_num"],)
+                "# Line {}".format( step["line_num"],)
             )
 
             print("", end="")
             if step["actions"]:
-                first = True
                 for action in step["actions"]:
-                    if first:
-                        first = False
-                    else:
-                        print(", ", end="")
-
+                    
+                    ##########################intialization
+                    
                     if action["action"] == "init_var":
-                        action_desc = "variable '{}' created and initiated with {}".format(
-                            action["var"], action["val"])
-                    elif action["action"] == "change_var":
-                        action_desc = "variable '{}' changed from {} to {}".format(
-                            action["var"], action["prev_val"], action["new_val"])
-                    elif action["action"] == "rm_var":
-                        action_desc = "variable '{}' is deleted from memory {} to {}".format(
-                            action["var"], action["prev_val"], action["None"])
+                        action_desc = "@ {} {} = {}".format( type(action["val"]) , action["var"], action["val"] )
+                    
+                    ############################adding
+                        
                     elif action["action"] == "list_add":
-                        action_desc = "{}[{}] appended with value {}".format(
-                            action["var"], action["index"], action["val"])
-                    elif action["action"] == "list_change":
-                        action_desc = "{}[{}] changed from {} to {}".format(
-                            action["var"], action["index"], action["prev_val"], action["new_val"])
-                    elif action["action"] == "list_remove":
-                        action_desc = "{}[{}] removed".format(
-                            action["var"], action["index"])
+                        action_desc = "+L {} ".format(type(action["val"]))
+                        action_desc += "{}[{}] + {}".format( action["var"], action["index"], action["val"] )
+                    
                     elif action["action"] == "dict_add":
-                        action_desc = "key {} added to {} with value {}".format(
-                            action["key"], action["var"], action["val"])
+                        action_desc = "+D {} ".format( type(action["val"]))
+                        action_desc += "{} + {} : {}".format(
+                            action["var"], action["key"],  action["val"])
+                    
+                    #########################change
+                    
+                    elif action["action"] == "change_var": # whole variable is changed
+                        action_desc = ">V {} ".format(type(action["new_val"]))
+                        action_desc += "{} > {} => {}".format(
+                            action["var"], action["prev_val"], action["new_val"])
+                        
+                    elif action["action"] == "list_change":
+                        action_desc = ">L {} ".format( type(action["new_val"]))
+                        action_desc += "{}[{}] > {} => {}".format(
+                            action["var"], action["index"], action["prev_val"], action["new_val"])
+                    
                     elif action["action"] == "dict_change":
-                        action_desc = "value of key {} in {} changed from {} to {}".format(
-                            action["key"], action["var"], action["prev_val"], action["new_val"])
+                        action_desc = ">D {} ".format( type(action["new_val"]))
+                        action_desc += "{} > {} : {} => {}".format(
+                             action["var"], action["key"], action["prev_val"], action["new_val"])
+                    
+                    #########################remove
+                
+                    elif action["action"] == "list_remove":
+                        action_desc = "-L {}[{}]".format( action["var"], action["index"])
+                        
                     elif action["action"] == "dict_remove":
-                        action_desc = "key {} removed from {}".format(
-                            action["key"], action["var"])
-                    print(action_desc, end="")
-                print("")
-        print()
+                        action_desc = "-D {} : {}".format( action["var"], action["key"] )
+                    
+                    print(action_desc)
 
         linelogs = self.results["line_logs"]
-        print("", end="")
 
 
 
@@ -217,4 +223,3 @@ results = tdebugger.run()
 
 terminal = Terminal(results)
 terminal.terminal()
-# print(results)
