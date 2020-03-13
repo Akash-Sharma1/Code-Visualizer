@@ -7,13 +7,13 @@ import copy, argparse
 import importlib
 
 class var_infos:
-    def __init__(self, name, line, step, value):
+    def __init__(self, name, line, value):
         self.name = name
         self.line_value = []
-        self.appendto_logs(line, step, value)
+        self.appendto_logs(line, value)
         
-    def appendto_logs(self, line, step, value):
-        self.line_value.append({"line" : line, "step" : step, "value" : value})
+    def appendto_logs(self, line, value):
+        self.line_value.append({"line" : line, "value" : value})
     
     def getvariabletype(self):
         value = self.line_value[0]["value"]
@@ -23,22 +23,13 @@ class var_infos:
                 return "undefined" # if all variable types are not same
         return var_type
     
-    def range(self):
-        if self.getvariabletype() in [int, float]:
-            values = [ lv["value"] for lv in self.line_value ]
-            return [min(values), max(values)]
-        else:
-            return []
-    
     def all_vals(self):
         return {
             "var" : self.name,
             "type": str(self.getvariabletype()),
-            "range": self.range(),
             "line_value": self.line_value
         }
     
-
 class debugC:
     def __init__(self, file_path, function_name, function_args, custom_args):
         self.file_path = file_path
@@ -52,10 +43,7 @@ class debugC:
         self.var_logs = {}# storing variable objects
         self.line_logs = {}# stores encountred lines
         
-        
         self.prev_time = time.time()
-        self.step = 0
-        
         
         self.results = {
             "code_info": {
@@ -71,12 +59,11 @@ class debugC:
         
     def _trace_calls_(self, frame, event, args):
         self.curr_line = frame.f_lineno
-        if frame.f_code.co_name == self.function_name:
+        if frame.f_code.co_name == self.function_name: # this limits to one funtion only
             return self._trace_lines_
     
     def _trace_lines_(self, frame, event, args):
         curr_logs = {
-            "step": self.step,
             "line_num": self.curr_line,
             "actions": []
         }
@@ -85,16 +72,15 @@ class debugC:
         if self.curr_line not in self.line_logs:# if curr line_num not is encountered lines add it to lines_logs.
             self.line_logs[self.curr_line] = self.curr_line
         
-        
         self.first_print_for_this_line = True
         current_variables = frame.f_locals
         
         for var, val in current_variables.items():
             if var not in self.prev_vars: # if new variable encountered add it to actions under initializing variables
                 curr_logs["actions"].append(
-                    {"action": "init_var", "var": var, "val": val})
+                    {"action": "init_var", "var": var, "val": copy.deepcopy(val)})
                 
-                self.var_logs[var] = var_infos( var, self.curr_line, self.step, copy.deepcopy(val))
+                self.var_logs[var] = var_infos( var, self.curr_line, copy.deepcopy(val))
                 
             elif self.prev_vars[var] != val:
                 prev_val = self.prev_vars[var]
@@ -106,13 +92,12 @@ class debugC:
                 else:
                     curr_logs["actions"].append(
                         {"action": "change_var", "var": var, "prev_val": prev_val, "new_val": val})
-                self.var_logs[var].appendto_logs(
-                    self.curr_line, self.step, copy.deepcopy(val))
+                
+                self.var_logs[var].appendto_logs( self.curr_line, copy.deepcopy(val))
 
         self.prev_vars = copy.deepcopy(current_variables)
         self.prev_time = time.time()
         self.curr_line = frame.f_lineno
-        self.step += 1
 
     def debuglist(self, var, prev_val, val):
         curr_logs = self.results["logs"][-1]
@@ -149,7 +134,7 @@ class debugC:
         module_spec = importlib.util.spec_from_file_location(
             "debugger", self.file_path)
         module = importlib.util.module_from_spec(module_spec)
-        # print(module),
+        
         module_spec.loader.exec_module(module)
         function = getattr(module, self.function_name)
 
@@ -174,8 +159,7 @@ class Terminal:
         logs = self.results["logs"]
         for step in logs:
             print(
-                "Step {}, line {}".format(
-                step["step"], step["line_num"],)
+                "line {}".format( step["line_num"],)
             )
 
             print("", end="")
@@ -220,23 +204,11 @@ class Terminal:
 
         linelogs = self.results["line_logs"]
         print("", end="")
-        for line in linelogs:
-            print("Line {}:".format(line))
-        print("", end="")
 
 
-def funcarg(argument):
-    try:
-        return int(argument)
-    except ValueError:
-        try:
-
-            return float(argument)
-        except ValueError:
-            return argument
 
 debugpwd = "test.py"
-function_name = "test2"
+function_name = "main"
 function_args = []
 
 tdebugger = debugC(debugpwd, function_name, function_args, [])
@@ -245,3 +217,4 @@ results = tdebugger.run()
 
 terminal = Terminal(results)
 terminal.terminal()
+# print(results)
