@@ -235,43 +235,13 @@ def funcarg(argument):
         except ValueError:
             return argument
 
+debugpwd = "test.py"
+function_name = "test2"
+function_args = []
 
-parser = argparse.ArgumentParser(
-    formatter_class=argparse.RawTextHelpFormatter)
+tdebugger = debugC(debugpwd, function_name, function_args, [])
 
-debugGroup = parser.add_argument_group(
-    title="Analysis")
-debugGroup.add_argument("--debug", "-d",  help=".\n".join(
-    ["Path of a *.py file to debug", "Example: '--debug/-d main.py' will run the file main.py."]), metavar="FILE")
-debugGroup.add_argument("--function", "-f", help=".\n".join(
-    ["If --debug FILE is present, optionally provide the name of a function to debug and function arguments", "(defaults to main with no arguments)",
-        "Example: '--func/-f foo 10' will run foo(10)."]), nargs='+', default=["main"], metavar=("FUNC", "PARAMETER"))
-debugGroup.add_argument(
-    "--arguments", "-a", help="If --debug FILE is present, you can add your custom arguments for you program function here.", nargs="+", default=[]),
-debugGroup.add_argument("--output", "-o", help="./n".join(
-    ["will output the logs in result.json file \nIMPORTANT name output file 'result.json' if you want to create a video later, \nExample: ' TDebugger -d foo.py -f test2 10 -o result.json'"]), metavar="FILE")
+results = tdebugger.run()
 
-printGroup = parser.add_argument_group(
-    title="Reporting")
-printGroup.add_argument("--parse", "-p", help="./n".join(
-    ["parses a .json file(eg. the result.json file created with --output/-o argument) file in readable format."]), metavar="FILE")
-
-args = parser.parse_args()
-
-if args.debug:
-    debugpwd = args.debug
-    function_name = args.function[0]
-    function_args = list([funcarg(arg) for arg in args.function[1:]])
-
-    tdebugger = debugC(debugpwd, function_name, function_args,  [debugpwd] + args.arguments)
-
-    results = tdebugger.run()
-
-    outputpwd = args.output
-    if outputpwd:
-        print(results)
-    else:
-        terminal = Terminal(results)
-        terminal.terminal()
-else:
-    print("Run <<\"TDebugger --help\">>")
+terminal = Terminal(results)
+terminal.terminal()
