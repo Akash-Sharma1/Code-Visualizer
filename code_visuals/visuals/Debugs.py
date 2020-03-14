@@ -162,7 +162,7 @@ class Terminal:
         logs = self.results["logs"]
         for step in logs:
             
-            temp = {'Line': str( step["line_num"] ) , 'actions': []}
+            temp = {"Line": str( step["line_num"] ) , "actions": []}
             
             if step["actions"]:
                 for action in step["actions"]:
@@ -173,78 +173,84 @@ class Terminal:
                     
                     if action["action"] == "init_var":
                         
-                        One_step['about'] = 'Intialize'
-                        One_step['val_type'] = type(action["val"])
-                        One_step['var_name'] = action["var"]
-                        One_step['val'] = action["val"]
+                        One_step["about"] = "Intialize"
+                        One_step["var_name"] = action["var"]
+                        One_step["val"] = action["val"]
+                        type_var = str(type(action["val"]))
+                        One_step['val_type'] = type_var[ type_var.find("'")+1 : type_var.find("'",type_var.find("'")+1 ) ]
                         
                     ############################adding
                         
                     elif action["action"] == "list_add":
                         
-                        One_step['about'] = 'Add'
-                        One_step['val_type'] = type(action["val"])
-                        One_step['var_name'] = action["var"]
-                        One_step['val'] = action["val"]
-                        One_step['index'] = action["index"]
-                        One_step['var_type'] = 'List'
+                        One_step["about"] = "Add"
+                        One_step["var_name"] = action["var"]
+                        One_step["val"] = action["val"]
+                        One_step["index"] = action["index"]
+                        One_step["var_type"] = "List"
+                        type_var = str(type(action["val"]))
+                        One_step['val_type'] = type_var[ type_var.find("'")+1 : type_var.find("'",type_var.find("'")+1 ) ]
                     
                     elif action["action"] == "dict_add":
                         
-                        One_step['about'] = 'Add'
-                        One_step['val_type'] = type(action["val"])
-                        One_step['var_name'] = action["var"]
-                        One_step['val'] = action["val"]
-                        One_step['key'] = action["key"]
-                        One_step['var_type'] = 'Dict'
+                        One_step["about"] = "Add"
+                        One_step["var_name"] = action["var"]
+                        One_step["val"] = action["val"]
+                        One_step["key"] = action["key"]
+                        One_step["var_type"] = "Dict"
+                        type_var = str(type(action["val"]))
+                        One_step['val_type'] = type_var[ type_var.find("'")+1 : type_var.find("'",type_var.find("'")+1 ) ]
                     
                     #########################change
                     
                     elif action["action"] == "change_var": # whole variable is changed
                         
-                        One_step['about'] = 'Change'
-                        One_step['val_type'] = type(action["new_val"])
-                        One_step['var_name'] = action["var"]
-                        One_step['new_val'] = action["new_val"]
-                        One_step['prev_val'] = action["prev_val"]
-                        One_step['var_type'] = 'Variable'
+                        One_step["about"] = "Change"
+                        One_step["var_name"] = action["var"]
+                        One_step["new_val"] = action["new_val"]
+                        One_step["prev_val"] = action["prev_val"]
+                        One_step["var_type"] = "Variable"
+                        type_var = str(type(action["new_val"]))
+                        One_step['val_type'] = type_var[ type_var.find("'")+1 : type_var.find("'",type_var.find("'")+1 ) ]
                         
                     elif action["action"] == "list_change":
                         
-                        One_step['about'] = 'Change'
-                        One_step['val_type'] = type(action["new_val"])
-                        One_step['var_name'] = action["var"]
-                        One_step['index'] = action["index"]
-                        One_step['new_val'] = action["new_val"]
-                        One_step['prev_val'] = action["prev_val"]
-                        One_step['var_type'] = 'List'
+                        One_step["about"] = "Change"
+                        One_step["var_name"] = action["var"]
+                        One_step["index"] = action["index"]
+                        One_step["new_val"] = action["new_val"]
+                        One_step["prev_val"] = action["prev_val"]
+                        One_step["var_type"] = "List"
+                        type_var = str(type(action["new_val"]))
+                        One_step['val_type'] = type_var[ type_var.find("'")+1 : type_var.find("'",type_var.find("'")+1 ) ]
                     
                     elif action["action"] == "dict_change":
                         
-                        One_step['about'] = 'Change'
-                        One_step['val_type'] = type(action["new_val"])
-                        One_step['var_name'] = action["var"]
-                        One_step['key'] = action["key"]
-                        One_step['new_val'] = action["new_val"]
-                        One_step['prev_val'] = action["prev_val"]
-                        One_step['var_type'] = 'Dict'
+                        One_step["about"] = "Change"
+                        One_step["var_name"] = action["var"]
+                        One_step["key"] = action["key"]
+                        One_step["new_val"] = action["new_val"]
+                        One_step["prev_val"] = action["prev_val"]
+                        One_step["var_type"] = "Dict"
+                        type_var = str(type(action["new_val"]))
+                        One_step['val_type'] = type_var[ type_var.find("'")+1 : type_var.find("'",type_var.find("'")+1 ) ]
                     
                     #########################remove
                 
                     elif action["action"] == "list_remove":
                         
-                        One_step['about'] = 'Remove'
-                        One_step['var_name'] = action["var"]
-                        One_step['index'] = action["index"]
-                        One_step['var_type'] = 'List'
+                        One_step["about"] = "Remove"
+                        One_step["var_name"] = action["var"]
+                        One_step["index"] = action["index"]
+                        One_step["var_type"] = "List"
                         
                     elif action["action"] == "dict_remove":
-                        One_step['about'] = 'Remove'
-                        One_step['var_name'] = action["var"]
-                        One_step['key'] = action["key"]
-                        One_step['var_type'] = 'Dict'
+                        One_step["about"] = "Remove"
+                        One_step["var_name"] = action["var"]
+                        One_step["key"] = action["key"]
+                        One_step["var_type"] = "Dict"
                     
-                    temp['actions'].append(One_step)
+                    temp["actions"].append(One_step)
 
             ans.append(temp)
 
@@ -269,13 +275,13 @@ def main():
     
     print(output)
     for i in output:
-        print( i['Line'])
-        for j in i['actions']:
+        print( i["Line"])
+        for j in i["actions"]:
             print(j)
     return output
     
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
 
 # # represents line number

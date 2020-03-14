@@ -30,7 +30,7 @@
 		<script type = "application/javascript" src = "static/AnimationLibrary/ObjectManager.js"> </script>
 		<script type = "application/javascript" src = "static/AnimationLibrary/AnimationMain.js"> </script>
 		<script type = "application/javascript" src = "static/AlgorithmLibrary/Algorithm.js"> </script>
-		<script type = "application/javascript" src = "static/AlgorithmLibrary/BST.js"> </script> 
+		<script type = "application/javascript" src = "static/AlgorithmLibrary/Algo.js"> </script> 
 				
 			
 	 </head> 
@@ -65,5 +65,53 @@
 			
 
 		</div><!-- container -->
+		<textarea id="tb" style="display: none;" >{{output}}</textarea>
 	</body>
 </html>
+
+<script >
+function get_instructions(Instructions){
+	var str = document.getElementById('tb').value;
+	str = str.replace(/{/g," { "); 
+	str = str.replace(/}/g," } ");
+	str = str.replace(/'/g,"\""); 
+
+	console.log(str);
+	var j=0;
+	var final =""
+	while (j<str.length){
+		if (str[j]==' ' || str[j] == ',' || str[j] == '[' || str[j] == ']' || str[j] == '{' || str[j] == '}' || str[j] == ":"){
+			final+=str[j];
+			j+=1;
+		}
+		else if(str[j]=="\""){
+			final+=str[j];
+			j++;
+			while(j<str.length && str[j] != "\""){final+=str[j];j+=1;}
+			final+=str[j];
+			j++;
+		}
+		else {
+			temp = ""
+			final+="\"";
+			while(j<str.length && str[j]!=' ' && str[j]!=',' && str[j]!='[' && str[j]!=']' && str[j]!='{' && str[j]!='}' && str[j]!="\"" && str[j]!=":" ){
+				final+=str[j];
+				console.log("ger"+ j);
+				j+=1;
+			}
+			final+="\""
+		}
+	}
+	output = JSON.parse(final);
+	
+	console.log(final);
+	for (i=0 ; i<output.length;i++){
+		temp ={};
+		temp['Line'] = output[i]["Line"];
+		temp['actions'] = output[i]["actions"];
+		Instructions.push(temp);
+	}
+	console.log(Instructions);
+	return Instructions
+}
+</script>
