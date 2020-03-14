@@ -155,14 +155,18 @@ class Terminal:
         self.results = results
 
     def terminal(self):
+        
+        
+        ans = []
 
         logs = self.results["logs"]
         for step in logs:
-            print(
-                "# Line {}".format( step["line_num"],)
-            )
+            linestr = "# "+ str( step["line_num"] )
+            
+            temp = {linestr: []}
+            
+            print(linestr)
 
-            print("", end="")
             if step["actions"]:
                 for action in step["actions"]:
                     
@@ -208,21 +212,35 @@ class Terminal:
                         action_desc = "-D {} : {}".format( action["var"], action["key"] )
                     
                     print(action_desc)
+                    
+                    temp[linestr].append(action_desc)
+
+            ans.append(temp)
 
         linelogs = self.results["line_logs"]
 
+        return ans        
+        
 
 
-debugpwd = "test.py"
-function_name = "main"
-function_args = []
+def main():
 
-rundebug = debugC(debugpwd, function_name, function_args, [])
+    debugpwd = "visuals/to_debug.py"
+    function_name = "main"
+    function_args = []
 
-results = rundebug.run()
+    rundebug = debugC(debugpwd, function_name, function_args, [])
 
-terminal = Terminal(results)
-terminal.terminal()
+    results = rundebug.run()
+
+    terminal = Terminal(results)
+    output = terminal.terminal()
+    
+    return output
+    
+
+if __name__ == '__main__':
+    main()
 
 # # represents line number
 # L represents list
