@@ -161,59 +161,90 @@ class Terminal:
 
         logs = self.results["logs"]
         for step in logs:
-            linestr = "# "+ str( step["line_num"] )
             
-            temp = {linestr: []}
+            temp = {'Line': str( step["line_num"] ) , 'actions': []}
             
-            print(linestr)
-
             if step["actions"]:
                 for action in step["actions"]:
+                    
+                    One_step = {}
                     
                     ##########################intialization
                     
                     if action["action"] == "init_var":
-                        action_desc = "@ {} {} = {}".format( type(action["val"]) , action["var"], action["val"] )
-                    
+                        
+                        One_step['about'] = 'Intialize'
+                        One_step['val_type'] = type(action["val"])
+                        One_step['var_name'] = action["var"]
+                        One_step['val'] = action["val"]
+                        
                     ############################adding
                         
                     elif action["action"] == "list_add":
-                        action_desc = "+L {} ".format(type(action["val"]))
-                        action_desc += "{}[{}] + {}".format( action["var"], action["index"], action["val"] )
+                        
+                        One_step['about'] = 'Add'
+                        One_step['val_type'] = type(action["val"])
+                        One_step['var_name'] = action["var"]
+                        One_step['val'] = action["val"]
+                        One_step['index'] = action["index"]
+                        One_step['var_type'] = 'List'
                     
                     elif action["action"] == "dict_add":
-                        action_desc = "+D {} ".format( type(action["val"]))
-                        action_desc += "{} + {} : {}".format(
-                            action["var"], action["key"],  action["val"])
+                        
+                        One_step['about'] = 'Add'
+                        One_step['val_type'] = type(action["val"])
+                        One_step['var_name'] = action["var"]
+                        One_step['val'] = action["val"]
+                        One_step['key'] = action["key"]
+                        One_step['var_type'] = 'Dict'
                     
                     #########################change
                     
                     elif action["action"] == "change_var": # whole variable is changed
-                        action_desc = ">V {} ".format(type(action["new_val"]))
-                        action_desc += "{} > {} => {}".format(
-                            action["var"], action["prev_val"], action["new_val"])
+                        
+                        One_step['about'] = 'Change'
+                        One_step['val_type'] = type(action["new_val"])
+                        One_step['var_name'] = action["var"]
+                        One_step['new_val'] = action["new_val"]
+                        One_step['prev_val'] = action["prev_val"]
+                        One_step['var_type'] = 'Variable'
                         
                     elif action["action"] == "list_change":
-                        action_desc = ">L {} ".format( type(action["new_val"]))
-                        action_desc += "{}[{}] > {} => {}".format(
-                            action["var"], action["index"], action["prev_val"], action["new_val"])
+                        
+                        One_step['about'] = 'Change'
+                        One_step['val_type'] = type(action["new_val"])
+                        One_step['var_name'] = action["var"]
+                        One_step['index'] = action["index"]
+                        One_step['new_val'] = action["new_val"]
+                        One_step['prev_val'] = action["prev_val"]
+                        One_step['var_type'] = 'List'
                     
                     elif action["action"] == "dict_change":
-                        action_desc = ">D {} ".format( type(action["new_val"]))
-                        action_desc += "{} > {} : {} => {}".format(
-                             action["var"], action["key"], action["prev_val"], action["new_val"])
+                        
+                        One_step['about'] = 'Change'
+                        One_step['val_type'] = type(action["new_val"])
+                        One_step['var_name'] = action["var"]
+                        One_step['key'] = action["key"]
+                        One_step['new_val'] = action["new_val"]
+                        One_step['prev_val'] = action["prev_val"]
+                        One_step['var_type'] = 'Dict'
                     
                     #########################remove
                 
                     elif action["action"] == "list_remove":
-                        action_desc = "-L {}[{}]".format( action["var"], action["index"])
+                        
+                        One_step['about'] = 'Remove'
+                        One_step['var_name'] = action["var"]
+                        One_step['index'] = action["index"]
+                        One_step['var_type'] = 'List'
                         
                     elif action["action"] == "dict_remove":
-                        action_desc = "-D {} : {}".format( action["var"], action["key"] )
+                        One_step['about'] = 'Remove'
+                        One_step['var_name'] = action["var"]
+                        One_step['key'] = action["key"]
+                        One_step['var_type'] = 'Dict'
                     
-                    print(action_desc)
-                    
-                    temp[linestr].append(action_desc)
+                    temp['actions'].append(One_step)
 
             ans.append(temp)
 
@@ -236,6 +267,11 @@ def main():
     terminal = Terminal(results)
     output = terminal.terminal()
     
+    print(output)
+    for i in output:
+        print( i['Line'])
+        for j in i['actions']:
+            print(j)
     return output
     
 

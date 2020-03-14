@@ -5,4 +5,4 @@ from . import Debugs
 def index(request):
     output = Debugs.main()
     print(output)
-    return render(request, 'visuals/index.html', {})
+    return render(request, 'visuals/index.html', {'output':output})
